@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="PostgreSQL" database="PostgreSQL" id="89b65da4-4dbc-4b51-821a-1e2db6339212" >
+	<schema name="public" catalogname="CryptoTrade" >
+		<comment><![CDATA[standard public schema]]></comment>
+		<table name="audit_trail" prior="tb" >
+			<column name="id" type="integer" />
+			<column name="table_cible" type="integer" />
+			<column name="order_id" prior="record_id" type="integer" />
+			<column name="action" type="integer" />
+			<column name="utilisateur_id" type="integer" />
+			<column name="date_action" type="date" />
+			<column name="details" type="date" />
+			<column name="traid_id" type="integer" />
+			<fk name="fk_audit_trail_ordres" to_schema="CryptoTrade.public" to_table="ordres" >
+				<fk_column name="order_id" pk="id" />
+			</fk>
+			<fk name="fk_audit_trail_utilisateurs" to_schema="CryptoTrade.public" to_table="utilisateurs" >
+				<fk_column name="utilisateur_id" pk="id" />
+			</fk>
+			<fk name="fk_audit_trail_trades" to_schema="CryptoTrade.public" to_table="trades" >
+				<fk_column name="traid_id" pk="id" />
+			</fk>
+		</table>
+		<table name="cryptomonnaies" prior="cryptocurrencies" >
+			<column name="id" type="integer" />
+			<column name="nom" prior="name" type="varchar" length="50" />
+			<column name="symbole" prior="symbol" type="varchar" length="10" />
+			<column name="date_creation" prior="creation_date" type="date" />
+			<column name="status" type="varchar" length="50" />
+			<index name="unq_cryptomonnaies_id" unique="UNIQUE_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="detection_anomalie" prior="tbl" >
+			<column name="id" type="integer" />
+			<column name="type" type="integer" />
+			<column name="ordre_id" type="integer" />
+			<column name="utilisateur_id" type="integer" />
+			<column name="date_detection" type="date" />
+			<column name="commentaire" type="date" />
+			<fk name="fk_detection_anomalie_ordres" to_schema="CryptoTrade.public" to_table="ordres" >
+				<fk_column name="ordre_id" pk="id" />
+			</fk>
+			<fk name="fk_detection_anomalie" to_schema="CryptoTrade.public" to_table="utilisateurs" >
+				<fk_column name="utilisateur_id" pk="id" />
+			</fk>
+		</table>
+		<table name="ordres" prior="tbl" >
+			<column name="id" type="integer" />
+			<column name="utilisateur_id" type="integer" />
+			<column name="paire_id" type="integer" />
+			<column name="type_ordre" type="integer" />
+			<column name="mode" type="integer" />
+			<column name="quantite" type="integer" />
+			<column name="prix" type="integer" />
+			<column name="statut" type="varchar" length="50" />
+			<column name="date_creation" type="date" />
+			<index name="unq_ordres_id" unique="UNIQUE_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_ordres_paire_trading" to_schema="CryptoTrade.public" to_table="paire_trading" >
+				<fk_column name="paire_id" pk="id" />
+			</fk>
+			<fk name="fk_ordres_utilisateurs" to_schema="CryptoTrade.public" to_table="utilisateurs" >
+				<fk_column name="utilisateur_id" pk="id" />
+			</fk>
+		</table>
+		<table name="paire_trading" prior="trading_pair" >
+			<column name="id" type="integer" />
+			<column name="crypto_contre" prior="base_crypto" type="integer" />
+			<column name="crypto_base" prior="quote_crypto" type="integer" />
+			<column name="status" type="varchar" length="50" />
+			<column name="date_ouverture" prior="opening_date" type="date" />
+			<index name="unq_paire_trading_id" unique="UNIQUE_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_paire_trading" to_schema="CryptoTrade.public" to_table="cryptomonnaies" >
+				<fk_column name="crypto_contre" pk="id" />
+			</fk>
+		</table>
+		<table name="portefeuilles" prior="tb" >
+			<column name="id" type="integer" />
+			<column name="utilisateur_id" type="integer" />
+			<column name="solde_total" type="decimal" length="20" decimal="5" />
+			<column name="solde_bloque" type="decimal" length="20" decimal="5" />
+			<column name="date_maj" type="date" />
+			<column name="crypto_id" type="integer" />
+			<fk name="fk_portefeuilles_utilisateurs" to_schema="CryptoTrade.public" to_table="utilisateurs" >
+				<fk_column name="utilisateur_id" pk="id" />
+			</fk>
+			<fk name="fk_portefeuilles" to_schema="CryptoTrade.public" to_table="cryptomonnaies" >
+				<fk_column name="crypto_id" pk="id" />
+			</fk>
+		</table>
+		<table name="prix_marche" prior="tbl" >
+			<column name="id" type="integer" />
+			<column name="paire_id" type="integer" />
+			<column name="prix" type="decimal" length="20" decimal="5" />
+			<column name="volume" type="integer" />
+			<column name="date_maj" type="date" />
+			<fk name="fk_prix_marche_paire_trading" to_schema="CryptoTrade.public" to_table="paire_trading" >
+				<fk_column name="paire_id" pk="id" />
+			</fk>
+		</table>
+		<table name="statistique_marche" prior="tbl" >
+			<column name="id" type="integer" />
+			<column name="paire_id" type="integer" />
+			<column name="indicateur" type="integer" />
+			<column name="valeur" type="integer" />
+			<column name="periode" type="integer" />
+			<column name="date_maj" type="date" />
+			<fk name="fk_statistique_marche" to_schema="CryptoTrade.public" to_table="paire_trading" >
+				<fk_column name="paire_id" pk="id" />
+			</fk>
+		</table>
+		<table name="trades" prior="tbl" >
+			<column name="id" type="integer" />
+			<column name="ordre_id_achat" prior="ordre_id" type="integer" />
+			<column name="prix" type="decimal" length="20" decimal="5" />
+			<column name="quantite" type="integer" />
+			<column name="date_execution" type="date" />
+			<column name="order_id_vente" type="integer" />
+			<index name="unq_trades_id" unique="UNIQUE_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_trades_ordres" to_schema="CryptoTrade.public" to_table="ordres" >
+				<fk_column name="ordre_id_achat" pk="id" />
+			</fk>
+			<fk name="fk_trades_trades" to_schema="CryptoTrade.public" to_table="ordres" >
+				<fk_column name="order_id_vente" pk="id" />
+			</fk>
+		</table>
+		<table name="utilisateurs" prior="users" >
+			<column name="id" type="integer" />
+			<column name="nom" prior="name" type="varchar" length="50" />
+			<column name="email" type="varchar" length="50" />
+			<column name="date_inscription" prior="registration_date" type="date" />
+			<column name="status" type="varchar" length="50" />
+			<index name="unq_utilisateurs_id" unique="UNIQUE_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+	</schema>
+	<layout name="Main Diagram" id="e50db414-5e58-4016-b75b-dfe538219221" show_relation="columns" >
+		<entity schema="CryptoTrade.public" name="utilisateurs" color="C1D8EE" x="57" y="57" />
+		<entity schema="CryptoTrade.public" name="cryptomonnaies" color="C1D8EE" x="266" y="57" />
+		<entity schema="CryptoTrade.public" name="prix_marche" color="C1D8EE" x="437" y="57" />
+		<entity schema="CryptoTrade.public" name="audit_trail" color="C1D8EE" x="608" y="57" />
+		<entity schema="CryptoTrade.public" name="detection_anomalie" color="C1D8EE" x="437" y="285" />
+		<entity schema="CryptoTrade.public" name="trades" color="C1D8EE" x="608" y="285" />
+		<entity schema="CryptoTrade.public" name="portefeuilles" color="C1D8EE" x="266" y="399" />
+		<entity schema="CryptoTrade.public" name="paire_trading" color="C1D8EE" x="57" y="342" />
+		<entity schema="CryptoTrade.public" name="statistique_marche" color="C1D8EE" x="57" y="551" />
+		<entity schema="CryptoTrade.public" name="ordres" color="C1D8EE" x="893" y="247" />
+	</layout>
+</project>
