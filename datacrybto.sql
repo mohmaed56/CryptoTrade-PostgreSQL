@@ -432,44 +432,6 @@ SELECT DISTINCT ON (paire_id) paire_id, prix, date_maj
 FROM prix_marche
 ORDER BY paire_id, date_maj DESC;
 
---Recursive CTE
---détecter les chaînes de trades d’un même utilisateur
-WITH RECURSIVE trade_chain AS (
-
-    SELECT
-        t.id AS trade_id,
-        t.ordre_id,
-        o.utilisateur_id,
-        t.prix,
-        t.quantite,
-        t.date_execution,
-        1 AS niveau
-    FROM trades t
-    JOIN ordres o
-      ON o.id = t.ordre_id
-     AND o.date_creation = t.ordre_date_creation
-
-    UNION ALL
-    SELECT
-        t2.id AS trade_id,
-        t2.ordre_id,
-        o2.utilisateur_id,
-        t2.prix,
-        t2.quantite,
-        t2.date_execution,
-        tc.niveau + 1
-    FROM trades t2
-    JOIN ordres o2
-      ON o2.id = t2.ordre_id
-     AND o2.date_creation = t2.ordre_date_creation
-    JOIN trade_chain tc
-      ON tc.ordre_id = t2.ordre_id
-     AND t2.date_execution > tc.date_execution
-)
-
-SELECT *
-FROM trade_chain
-ORDER BY ordre_id, date_execution;
 
 ---monitoring:
 SELECT *
@@ -477,6 +439,3 @@ FROM pg_stat_database
 WHERE datname = current_database();
 --work_mem pour une session:
 SET work_mem = '64MB';
-
-
-
