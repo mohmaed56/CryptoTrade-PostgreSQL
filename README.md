@@ -23,10 +23,12 @@ La base de données PostgreSQL constitue le cœur du système et assure :
 - Optimiser PostgreSQL via indexation, partitionnement et monitoring
 
 ---
-
+##gestion de projet
+###lien trello:
+https://trello.com/invite/b/694a59f3bb3ccc7e5540fe40/ATTI556385e663adfa5c703330d226ce3f1d147287F7/cryptotrade
 ## 3. Modèle de Données (MLD)
 
-Le modèle logique de données repose sur **10 tables principales** :
+Le modèle logique de données repose sur **10 tables principal** :
 
 - utilisateurs  
 - cryptomonnaies  
